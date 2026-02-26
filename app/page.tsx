@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 import ImageCropper from "@/components/ImageCropper";
 import OrderModal from "@/components/OrderModal";
-import { supabase } from "../utils/supabase";
+import { supabase } from "@/utils/supabase";
 
 export default function Home() {
   const [imageToCrop, setImageToCrop] = useState<string | null>(null);
