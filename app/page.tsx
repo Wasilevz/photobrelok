@@ -164,4 +164,4 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="absolute right-[-10px] sm:right-[5%] top-1/2 -translate-y-1/2 h-[220px] z-50 pointer-ev
+        <div className="absolute right-[-10px] sm:right-[5%] top-1/2 -translate-y-1/2 h-[220px] z-50 pointer-events-none flex items-center">
