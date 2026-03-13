@@ -128,12 +128,12 @@ export default function Home() {
             </div>
             
             <div className="absolute top-[8px] left-[70px] flex gap-[7px] pointer-events-none">
-              {Array.from({ length: 150 }).map((, i) => (
+              {Array.from({ length: 150 }).map((_, i) => (
                 <div key={`top-${i}`} className="w-[6px] h-[10px] bg-gray-100 rounded-[2px] shrink-0 shadow-inner" />
               ))}
             </div>
             <div className="absolute bottom-[8px] left-[70px] flex gap-[7px] pointer-events-none">
-              {Array.from({ length: 150 }).map((, i) => (
+              {Array.from({ length: 150 }).map((_, i) => (
                 <div key={`bot-${i}`} className="w-[6px] h-[10px] bg-gray-100 rounded-[2px] shrink-0 shadow-inner" />
               ))}
             </div>
