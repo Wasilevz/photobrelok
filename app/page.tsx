@@ -75,30 +75,26 @@ export default function Home() {
 
       if (!apiRes.ok) throw new Error("Сбой отправки в Telegram (api/order)");
 
-      // Если всё успешно: очищаем слоты, закрываем окно и кидаем на страницу "Спасибо"
       setSlots(Array(10).fill(null)); 
       setIsModalOpen(false);
       const orderId = Math.floor(Math.random() * 9000) + 1000;
       router.push(`/thanks?orderId=${orderId}`);
 
     } catch (err: any) {
-      // Если где-то ошибка, выводим её на экран
       alert("ОШИБКА: " + err.message);
     } finally {
-      // Это выполнится в любом случае (снимет статус загрузки)
       setIsSubmitting(false);
     }
   };
 
- return (
+  return (
     <main className="min-h-screen bg-gray-100 text-gray-900 py-10 font-sans selection:bg-orange-200 overflow-x-hidden">
       
-      {/* Скрытый инпут для выбора фото /}
       <input 
         type="file" 
         ref={fileInputRef} 
         onChange={onFileChange} 
-        accept="image/" 
+        accept="image/*" 
         className="hidden" 
       />
 
@@ -113,7 +109,6 @@ export default function Home() {
 
       <div className="relative w-full max-w-5xl mx-auto h-[220px] mt-8">
         
-        {/* СКРОЛЛ КОНТЕЙНЕР */}
         <div 
           className="w-full h-full overflow-x-auto flex items-center pl-4 sm:pl-10 no-scrollbar"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
@@ -122,7 +117,6 @@ export default function Home() {
             .no-scrollbar::-webkit-scrollbar { display: none !important; }
           `}</style>
 
-          {/* ЧЕРНАЯ ЛЕНТА */}
           <div className="relative bg-[#111] h-[150px] flex items-center rounded-l-[40px] pl-[60px] gap-[10px] shrink-0 pr-[150px] sm:pr-[200px] overflow-hidden">
             
             <div className="absolute left-[8px] top-1/2 -translate-y-1/2 w-[35px] aspect-square z-10 overflow-hidden rounded-full drop-shadow-md pointer-events-none">
@@ -134,12 +128,12 @@ export default function Home() {
             </div>
             
             <div className="absolute top-[8px] left-[70px] flex gap-[7px] pointer-events-none">
-              {Array.from({ length: 150 }).map((_, i) => (
+              {Array.from({ length: 150 }).map((, i) => (
                 <div key={`top-${i}`} className="w-[6px] h-[10px] bg-gray-100 rounded-[2px] shrink-0 shadow-inner" />
               ))}
             </div>
             <div className="absolute bottom-[8px] left-[70px] flex gap-[7px] pointer-events-none">
-              {Array.from({ length: 150 }).map((_, i) => (
+              {Array.from({ length: 150 }).map((, i) => (
                 <div key={`bot-${i}`} className="w-[6px] h-[10px] bg-gray-100 rounded-[2px] shrink-0 shadow-inner" />
               ))}
             </div>
@@ -161,3 +155,13 @@ export default function Home() {
                   ) : (
                     <div className="flex flex-col items-center text-zinc-500 group-hover:text-gray-300">
                       <span className="text-3xl mb-1">+</span>
+                      <span className="text-xs font-bold">{index + 1}</span>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="absolute right-[-10px] sm:right-[5%] top-1/2 -translate-y-1/2 h-[220px] z-50 pointer-ev
