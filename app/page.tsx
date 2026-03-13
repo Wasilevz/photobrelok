@@ -80,7 +80,7 @@ export default function Home() {
     }
       setIsSubmitting(false);
     }
-  };
+  });
 
  return (
     <main className="min-h-screen bg-gray-100 text-gray-900 py-10 font-sans selection:bg-orange-200 overflow-x-hidden">
