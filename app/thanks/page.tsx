@@ -121,7 +121,7 @@ function ThankYouContent() {
             <Package className="w-10 h-10 text-[#FF8800]" />
           </div>
           <h2 className="text-2xl font-black uppercase italic">Супер-выбор!</h2>
-          <p className="text-zinc-400 mt-3">Мы обновили макет и добавили <br />второй брелок в твою посылку.</p>
+          <p className="text-zinc-400 mt-3">Мы обновили макет и добавили <br />второй такой же брелок в твою посылку.</p>
         </div>
       )}
 
