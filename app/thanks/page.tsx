@@ -79,11 +79,11 @@ function ThankYouContent() {
           <div className="space-y-3 mb-8 bg-orange-50 p-5 rounded-3xl border border-orange-100">
             <div className="flex justify-between items-center text-sm">
               <span className="text-gray-500">Цена второго брелка:</span>
-              <span className="font-bold line-through text-gray-400">990 лей</span>
+              <span className="font-bold line-through text-gray-400">500 лей</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="font-bold text-black">По акции сегодня:</span>
-              <span className="text-3xl font-black text-[#FF8800]">590 лей</span>
+              <span className="text-3xl font-black text-[#FF8800]">150 лей</span>
             </div>
             <div className="pt-2 border-t border-orange-200 flex items-center gap-2 text-[11px] font-bold text-orange-600 uppercase tracking-tighter">
               <Package className="w-4 h-4" />
@@ -98,7 +98,7 @@ function ThankYouContent() {
             </div>
             <div className="text-right leading-none">
               <div className="text-[10px] font-black uppercase text-gray-400">Экономия</div>
-              <div className="text-lg font-black text-green-600">400 леев</div>
+              <div className="text-lg font-black text-green-600">100 леев</div>
             </div>
           </div>
 
