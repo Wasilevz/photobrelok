@@ -188,7 +188,7 @@ export default function Home() {
             }`}
         >
           {slots.filter(Boolean).length < 6 
-            ? ЗАГРУЗИТЕ МИНИМУМ 6 ФОТО (${slots.filter(Boolean).length}/6)
+            ? `ЗАГРУЗИТЕ МИНИМУМ 6 ФОТО (${slots.filter(Boolean).length}/6)`
             : `ОФОРМИТЬ ЗАКАЗ (${slots.filter(Boolean).length}/10)`}
         </button>
       </div>
