@@ -75,10 +75,9 @@ export default function Home() {
       setSlots(Array(10).fill(null)); 
       setIsModalOpen(false);
 
-    } catch (err) {
-      console.error("Детали ошибки:", err);
-      alert("Произошла ошибка при оформлении. Попробуйте еще раз.");
-    } finally {
+    } catch (err: any) {
+      alert("ОШИБКА: " + err.message);
+    }
       setIsSubmitting(false);
     }
   };
