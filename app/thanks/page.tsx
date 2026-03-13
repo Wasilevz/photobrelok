@@ -73,13 +73,13 @@ function ThankYouContent() {
           </h2>
           
           <p className="text-gray-600 mb-6 leading-relaxed text-sm">
-            Вы уже оплачиваете доставку. Добавьте <span className="font-bold text-black">второй такой же брелок</span> прямо сейчас — мы положим его в ту же коробку.
+            Добавьте <span className="font-bold text-black">второй такой же брелок</span> прямо сейчас — мы положим его в ту же коробку.
           </p>
 
           <div className="space-y-3 mb-8 bg-orange-50 p-5 rounded-3xl border border-orange-100">
             <div className="flex justify-between items-center text-sm">
               <span className="text-gray-500">Цена второго брелка:</span>
-              <span className="font-bold line-through text-gray-400">500 лей</span>
+              <span className="font-bold line-through text-gray-400">250 лей</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="font-bold text-black">По акции сегодня:</span>

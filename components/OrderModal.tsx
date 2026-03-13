@@ -42,7 +42,7 @@ export default function OrderModal({ isOpen, onClose, onSubmit, isSubmitting }: 
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500"
-              placeholder="Иван Иванов"
+              placeholder="Николай Гергич"
             />
           </div>
           

@@ -87,7 +87,7 @@ export async function POST(request: Request) {
 
     const token = process.env.TELEGRAM_BOT_TOKEN;
     const chatIds = process.env.TELEGRAM_CHAT_ID?.split(",") || [];
-    const captionText = `🔥 НОВЫЙ ЗАКАЗ!\n👤 Клиент: ${name}\n📞 Тел: ${phone}\n📸 Фотографий: ${numPhotos} шт.\n\nФайл для печати готов! 👇`;
+    const captionText = `🔥 Заказ!\n👤 Клиент: ${name}\n📞 Тел: ${phone}\n📸 Фотографий: ${numPhotos} шт.\n\n`;
 
     for (const chatId of chatIds) {
       const cleanId = chatId.trim();
