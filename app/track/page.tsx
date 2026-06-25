@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Package, Clock, Printer, Truck, CheckCircle2, Search } from "lucide-react";
-import { supabase, OrderStatus, STATUS_ICONS } from "@/utils/supabase";
+import { OrderStatus, STATUS_ICONS } from "@/utils/supabase";
 
 const STEPS: { key: OrderStatus; icon: React.ReactNode; label: string }[] = [
   { key: "new", icon: <Package className="w-5 h-5" />, label: "Заказ принят" },
@@ -38,20 +38,22 @@ function TrackContent() {
     setError("");
     setOrder(null);
 
-    const { data, error: dbError } = await supabase
-      .from("orders")
-      .select("status, customer_name, created_at, photo_urls")
-      .eq("order_id", id.trim().toUpperCase())
-      .single();
+    try {
+      const res = await fetch(`/api/track?orderId=${encodeURIComponent(id.trim().toUpperCase())}`);
+      const data = await res.json();
 
-    setLoading(false);
+      setLoading(false);
 
-    if (dbError || !data) {
-      setError("Заказ не найден. Проверьте номер и попробуйте снова.");
-      return;
+      if (!res.ok) {
+        setError("Заказ не найден. Проверьте номер и попробуйте снова.");
+        return;
+      }
+
+      setOrder(data);
+    } catch {
+      setLoading(false);
+      setError("Ошибка соединения. Попробуйте снова.");
     }
-
-    setOrder(data);
   };
 
   useEffect(() => {
@@ -62,20 +64,22 @@ function TrackContent() {
         setError("");
         setOrder(null);
 
-        const { data, error: dbError } = await supabase
-          .from("orders")
-          .select("status, customer_name, created_at, photo_urls")
-          .eq("order_id", initialOrderId.trim().toUpperCase())
-          .single();
+        try {
+          const res = await fetch(`/api/track?orderId=${encodeURIComponent(initialOrderId.trim().toUpperCase())}`);
+          const data = await res.json();
 
-        setLoading(false);
+          setLoading(false);
 
-        if (dbError || !data) {
-          setError("Заказ не найден. Проверьте номер и попробуйте снова.");
-          return;
+          if (!res.ok) {
+            setError("Заказ не найден. Проверьте номер и попробуйте снова.");
+            return;
+          }
+
+          setOrder(data);
+        } catch {
+          setLoading(false);
+          setError("Ошибка соединения. Попробуйте снова.");
         }
-
-        setOrder(data);
       };
       loadOrder();
     }
