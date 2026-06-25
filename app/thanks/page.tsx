@@ -69,6 +69,12 @@ function ThankYouContent() {
         <p className="text-gray-500 font-medium">
           Номер заказа: <span className="text-black bg-zinc-200 px-2 py-1 rounded font-mono">#{orderId}</span>
         </p>
+        <a
+          href={`/track?orderId=${orderId}`}
+          className="inline-flex items-center gap-2 text-sm font-bold text-[#FF6B00] hover:underline"
+        >
+          📋 Отследить статус заказа
+        </a>
         <p className="text-gray-400 text-sm">
           Мы перезвоним вам в течение 30 минут для подтверждения
         </p>
@@ -178,8 +184,15 @@ function ThankYouContent() {
       </div>
 
       <button
+        onClick={() => router.push(`/track?orderId=${orderId}`)}
+        className="mt-8 w-full max-w-md py-3 bg-white border-2 border-[#FF6B00] text-[#FF6B00] font-bold rounded-xl hover:bg-orange-50 transition-colors flex items-center justify-center gap-2"
+      >
+        📋 Отследить мой заказ #{orderId}
+      </button>
+
+      <button
         onClick={() => router.push('/')}
-        className="mt-12 text-zinc-400 hover:text-black font-bold text-sm uppercase tracking-widest transition-colors flex items-center gap-2"
+        className="mt-4 text-zinc-400 hover:text-black font-bold text-sm uppercase tracking-widest transition-colors flex items-center gap-2"
       >
         <span>←</span>
         Вернуться на сайт

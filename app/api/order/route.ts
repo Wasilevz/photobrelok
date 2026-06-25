@@ -1,5 +1,15 @@
 import { NextResponse } from "next/server";
 import { jsPDF } from "jspdf";
+import { supabase } from "@/utils/supabase";
+
+function generateOrderId(): string {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let id = "";
+  for (let i = 0; i < 6; i++) {
+    id += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return id;
+}
 
 export async function POST(request: Request) {
   try {
@@ -18,6 +28,24 @@ export async function POST(request: Request) {
     const token = process.env.TELEGRAM_BOT_TOKEN;
     if (!token) {
       return NextResponse.json({ error: "Telegram token не настроен" }, { status: 500 });
+    }
+
+    const orderId = generateOrderId();
+    const safeName = name.replace(/[^\p{L}\p{N}\s]/gu, "").slice(0, 50);
+
+    // Сохраняем заказ в Supabase
+    const { error: dbError } = await supabase.from("orders").insert([
+      {
+        order_id: orderId,
+        customer_name: safeName,
+        customer_phone: phone,
+        photo_urls: photoUrls,
+        status: "new",
+      },
+    ]);
+
+    if (dbError) {
+      console.error("Ошибка Supabase:", dbError);
     }
 
     const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
@@ -105,8 +133,7 @@ export async function POST(request: Request) {
     const buffer = Buffer.from(pdfOutput);
 
     const chatIds = process.env.TELEGRAM_CHAT_ID?.split(",") || [];
-    const safeName = name.replace(/[^\p{L}\p{N}\s]/gu, "").slice(0, 50);
-    const captionText = `🔥 Заказ!\n👤 Клиент: ${safeName}\n📞 Тел: ${phone}\n📸 Фотографий: ${numPhotos} шт.\n\n`;
+    const captionText = `🔥 Новый заказ #${orderId}\n👤 Клиент: ${safeName}\n📞 Тел: ${phone}\n📸 Фотографий: ${numPhotos} шт.\n\n📋 Статус: Новый\n🔗 Отслеживание: ${process.env.NEXT_PUBLIC_SITE_URL || "https://photobrelok.vercel.app"}/track?orderId=${orderId}`;
 
     for (const chatId of chatIds) {
       const cleanId = chatId.trim();
@@ -114,7 +141,7 @@ export async function POST(request: Request) {
 
       const tgFormData = new FormData();
       tgFormData.append("chat_id", cleanId);
-      tgFormData.append("document", new Blob([buffer], { type: "application/pdf" }), `Brelok_${safeName}.pdf`);
+      tgFormData.append("document", new Blob([buffer], { type: "application/pdf" }), `Brelok_${orderId}_${safeName}.pdf`);
       tgFormData.append("caption", captionText);
 
       await fetch(`https://api.telegram.org/bot${token}/sendDocument`, {
@@ -123,7 +150,7 @@ export async function POST(request: Request) {
       });
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, orderId });
 
   } catch (error) {
     console.error("Ошибка при сборке макета:", error);

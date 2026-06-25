@@ -95,10 +95,11 @@ export default function Home() {
 
       if (!apiRes.ok) throw new Error("Сбой отправки в Telegram (api/order)");
 
+      const { orderId } = await apiRes.json();
+
       slots.forEach(revokeOldUrl);
       setSlots(Array(10).fill(null));
       setIsModalOpen(false);
-      const orderId = Math.floor(Math.random() * 9000) + 1000;
       router.push(`/thanks?orderId=${orderId}`);
 
     } catch (err: unknown) {
