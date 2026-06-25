@@ -6,7 +6,7 @@ import { CheckCircle2, Timer, Package, ArrowRight, Sparkles } from 'lucide-react
 function ThankYouContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const orderId = searchParams.get('orderId') || Math.floor(Math.random() * 9000) + 1000;
+  const orderId = searchParams.get('orderId') || '';
 
   const [timeLeft, setTimeLeft] = useState(600);
   const [isLoading, setIsLoading] = useState(false);
@@ -147,6 +147,13 @@ function ThankYouContent() {
           <p className="text-[11px] text-gray-400 text-center mt-4">
             Оплата при получении · Никаких предоплат
           </p>
+
+          <button
+            onClick={() => setIsAdded(true)}
+            className="w-full mt-3 text-gray-400 hover:text-gray-600 text-xs font-medium py-2 transition-colors"
+          >
+            Нет, спасибо
+          </button>
         </div>
       ) : (
         <div className="max-w-md w-full bg-zinc-900 text-white rounded-[40px] p-10 text-center animate-in fade-in zoom-in duration-500">

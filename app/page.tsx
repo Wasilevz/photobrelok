@@ -15,6 +15,7 @@ export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCropping, setIsCropping] = useState(false);
   const [showScrollHint, setShowScrollHint] = useState(true);
+  const [showError, setShowError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const revokeOldUrl = useCallback((url: string | null) => {
@@ -96,7 +97,7 @@ export default function Home() {
 
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Неизвестная ошибка";
-      alert("ОШИБКА: " + msg);
+      setShowError(msg);
     } finally {
       setIsSubmitting(false);
     }
@@ -145,7 +146,7 @@ export default function Home() {
 
             <div className="absolute left-[8px] top-1/2 -translate-y-1/2 w-[35px] aspect-square z-10 overflow-hidden rounded-full drop-shadow-md pointer-events-none">
               <Image
-                src="ring.png"
+                src="/ring.png"
                 alt="Кольцо"
                 width={35}
                 height={35}
@@ -224,7 +225,7 @@ export default function Home() {
         <div className="text-center mb-3">
           <span className="text-xs text-gray-500 font-medium">
             {slots.filter(Boolean).length === 0
-              ? `Нажмите на кадр ${String.fromCharCode(8592)} чтобы добавить фото`
+              ? `Нажмите на кадр → чтобы добавить фото`
               : slots.filter(Boolean).length < 6
                 ? `Ещё ${6 - slots.filter(Boolean).length} фото до оформления`
                 : `Отлично! Можно оформлять заказ`}
@@ -281,6 +282,16 @@ export default function Home() {
         )}
       </div>
 
+      {showError && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[99999] max-w-md w-[90%]">
+          <div className="bg-red-600 text-white px-5 py-4 rounded-2xl shadow-2xl flex items-center justify-between gap-3">
+            <span className="text-sm font-medium">{showError}</span>
+            <button onClick={() => setShowError(null)} className="text-white/70 hover:text-white text-lg font-bold shrink-0">
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
