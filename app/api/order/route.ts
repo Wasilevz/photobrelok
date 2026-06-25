@@ -105,7 +105,7 @@ export async function POST(request: Request) {
     const buffer = Buffer.from(pdfOutput);
 
     const chatIds = process.env.TELEGRAM_CHAT_ID?.split(",") || [];
-    const safeName = name.replace(/[^\w\s]/g, "").slice(0, 50);
+    const safeName = name.replace(/[^\p{L}\p{N}\s]/gu, "").slice(0, 50);
     const captionText = `🔥 Заказ!\n👤 Клиент: ${safeName}\n📞 Тел: ${phone}\n📸 Фотографий: ${numPhotos} шт.\n\n`;
 
     for (const chatId of chatIds) {

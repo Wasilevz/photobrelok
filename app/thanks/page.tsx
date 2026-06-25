@@ -131,10 +131,10 @@ function ThankYouContent() {
                 Добавляем...
               </span>
             ) : (
-              <>
+              <span className="flex items-center justify-center gap-2">
                 Добавить второй брелок за 150 лей
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </>
+              </span>
             )}
           </button>
 
