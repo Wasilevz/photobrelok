@@ -4,7 +4,6 @@ import { useState, useRef, useCallback } from "react";
 import Image from "next/image";
 import ImageCropper from "@/components/ImageCropper";
 import OrderModal from "@/components/OrderModal";
-import { supabase } from "@/utils/supabase";
 import { useRouter } from 'next/navigation';
 
 export default function Home() {
@@ -78,13 +77,6 @@ export default function Home() {
 
         if (!cloudRes.ok) throw new Error("Ошибка Cloudinary. Проверьте настройки Upload Preset.");
         photoUrls.push(data.secure_url);
-      }
-
-      if (process.env.NEXT_PUBLIC_SUPABASE_URL) {
-          const { error: dbError } = await supabase.from("orders").insert([
-            { customer_name: userData.name, customer_phone: userData.phone, photo_urls: photoUrls }
-          ]);
-          if (dbError) throw new Error("Ошибка базы данных Supabase: " + dbError.message);
       }
 
       const apiRes = await fetch("/api/order", {
