@@ -149,7 +149,7 @@ export default function Home() {
           `}</style>
 
           <div className="relative bg-[#111] h-[150px] flex items-center rounded-l-[40px] pl-[60px] gap-[10px] shrink-0 pr-[150px] sm:pr-[200px] overflow-hidden">
-            
+
             <div className="absolute left-[8px] top-1/2 -translate-y-1/2 w-[35px] aspect-square z-10 overflow-hidden rounded-full drop-shadow-md pointer-events-none">
               <Image
                 src="ring.png"
@@ -159,12 +159,16 @@ export default function Home() {
                 className="w-full h-full object-cover transform-gpu scale-[1.1] translate-x-[1px] translate-y-[0.5px] md:scale-[1.3] md:translate-x-[2px] md:translate-y-[1px]"
               />
             </div>
-            
-            <div className="absolute top-[8px] left-[70px] right-[80px] h-[10px] pointer-events-none overflow-hidden">
-              <div className="flex gap-[7px] w-max" style={{ backgroundImage: "repeating-linear-gradient(90deg, transparent, transparent 5px, rgb(243 244 246) 5px, rgb(243 244 246) 11px)", backgroundSize: "16px 10px" }} />
+
+            <div className="absolute top-[8px] left-[70px] flex gap-[7px] pointer-events-none">
+              {Array.from({ length: 150 }).map((_, i) => (
+                <div key={`top-${i}`} className="w-[6px] h-[10px] bg-gray-100 rounded-[2px] shrink-0" />
+              ))}
             </div>
-            <div className="absolute bottom-[8px] left-[70px] right-[80px] h-[10px] pointer-events-none overflow-hidden">
-              <div className="flex gap-[7px] w-max" style={{ backgroundImage: "repeating-linear-gradient(90deg, transparent, transparent 5px, rgb(243 244 246) 5px, rgb(243 244 246) 11px)", backgroundSize: "16px 10px" }} />
+            <div className="absolute bottom-[8px] left-[70px] flex gap-[7px] pointer-events-none">
+              {Array.from({ length: 150 }).map((_, i) => (
+                <div key={`bot-${i}`} className="w-[6px] h-[10px] bg-gray-100 rounded-[2px] shrink-0" />
+              ))}
             </div>
 
             <div className="flex gap-[10px] z-10 ml-4 relative">
