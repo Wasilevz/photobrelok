@@ -28,8 +28,8 @@ export default function OrderModal({ isOpen, onClose, onSubmit, isSubmitting }: 
 
   const validatePhone = (value: string): boolean => {
     const cleaned = value.replace(/[\s\-\(\)]/g, '');
-    if (!/^\+?\d{10,15}$/.test(cleaned)) {
-      setPhoneError('Введите корректный номер телефона');
+    if (!/^\d{8,12}$/.test(cleaned)) {
+      setPhoneError('Введите номер телефона без кода страны');
       return false;
     }
     setPhoneError('');
@@ -92,7 +92,7 @@ export default function OrderModal({ isOpen, onClose, onSubmit, isSubmitting }: 
                   ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
                   : 'border-zinc-700 focus:border-[#FF6B00] focus:ring-[#FF6B00]'
               }`}
-              placeholder="+373 60 123 456"
+              placeholder="60 123 456"
             />
             {phoneError && (
               <p className="text-red-400 text-xs mt-1">{phoneError}</p>

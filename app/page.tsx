@@ -214,8 +214,8 @@ export default function Home() {
             <Image
               src="/kodak.png"
               alt="Брелок Kodak"
-              width={0}
-              height={220}
+              width={379}
+              height={658}
               className="h-full w-auto block relative z-40 pointer-events-none"
             />
           </div>
