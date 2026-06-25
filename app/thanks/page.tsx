@@ -37,7 +37,6 @@ function ThankYouContent() {
   const handleUpsell = async () => {
     setIsLoading(true);
     try {
-      // Отправляем уведомление в Телеграм через наш новый API
       await fetch('/api/telegram', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -48,7 +47,7 @@ function ThankYouContent() {
       setIsAdded(true);
     } catch (error) {
       console.error("Ошибка:", error);
-      setIsAdded(true); // Все равно показываем успех клиенту
+      setIsAdded(true);
     } finally {
       setIsLoading(false);
     }
@@ -56,7 +55,7 @@ function ThankYouContent() {
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] flex flex-col items-center py-12 px-4 text-[#18181B] font-sans">
-      
+
       {/* 1. Блок успеха */}
       <div className="max-w-md w-full text-center space-y-4 mb-8 animate-in fade-in slide-in-from-top-4 duration-1000">
         <div className="flex justify-center relative">
@@ -69,12 +68,6 @@ function ThankYouContent() {
         <p className="text-gray-500 font-medium">
           Номер заказа: <span className="text-black bg-zinc-200 px-2 py-1 rounded font-mono">#{orderId}</span>
         </p>
-        <a
-          href={`/track?orderId=${orderId}`}
-          className="inline-flex items-center gap-2 text-sm font-bold text-[#FF6B00] hover:underline"
-        >
-          📋 Отследить статус заказа
-        </a>
         <p className="text-gray-400 text-sm">
           Мы перезвоним вам в течение 30 минут для подтверждения
         </p>
@@ -149,8 +142,8 @@ function ThankYouContent() {
           </p>
 
           <button
-            onClick={() => setIsAdded(true)}
-            className="w-full mt-3 text-gray-400 hover:text-gray-600 text-xs font-medium py-2 transition-colors"
+            onClick={() => router.push('/')}
+            className="w-full mt-4 py-4 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold rounded-xl transition-colors text-sm"
           >
             Нет, спасибо
           </button>
@@ -191,18 +184,10 @@ function ThankYouContent() {
       </div>
 
       <button
-        onClick={() => router.push(`/track?orderId=${orderId}`)}
-        className="mt-8 w-full max-w-md py-3 bg-white border-2 border-[#FF6B00] text-[#FF6B00] font-bold rounded-xl hover:bg-orange-50 transition-colors flex items-center justify-center gap-2"
-      >
-        📋 Отследить мой заказ #{orderId}
-      </button>
-
-      <button
         onClick={() => router.push('/')}
-        className="mt-4 text-zinc-400 hover:text-black font-bold text-sm uppercase tracking-widest transition-colors flex items-center gap-2"
+        className="mt-8 w-full max-w-md py-4 bg-white border-2 border-gray-200 text-gray-600 font-bold rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all flex items-center justify-center gap-2"
       >
-        <span>←</span>
-        Вернуться на сайт
+        ← Вернуться на сайт
       </button>
     </div>
   );
