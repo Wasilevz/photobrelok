@@ -5,6 +5,21 @@ export async function POST(request: Request) {
   try {
     const { name, phone, photoUrls } = await request.json();
 
+    if (!name || typeof name !== "string" || name.trim().length === 0) {
+      return NextResponse.json({ error: "Имя клиента обязательно" }, { status: 400 });
+    }
+    if (!phone || typeof phone !== "string" || phone.trim().length === 0) {
+      return NextResponse.json({ error: "Телефон обязателен" }, { status: 400 });
+    }
+    if (!Array.isArray(photoUrls) || photoUrls.length < 1) {
+      return NextResponse.json({ error: "Нужно минимум 1 фото" }, { status: 400 });
+    }
+
+    const token = process.env.TELEGRAM_BOT_TOKEN;
+    if (!token) {
+      return NextResponse.json({ error: "Telegram token не настроен" }, { status: 500 });
+    }
+
     const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
     
     // --- ПАРАМЕТРЫ ФОТО И ЛЕНТЫ ---
@@ -72,6 +87,10 @@ export async function POST(request: Request) {
     for (let i = 0; i < numPhotos; i++) {
       const safeUrl = photoUrls[i].replace("/upload/", "/upload/f_jpg,q_auto:best/");
       const res = await fetch(safeUrl);
+      if (!res.ok) {
+        console.error(`Не удалось загрузить фото ${i + 1}: ${res.status} ${res.statusText}`);
+        continue;
+      }
       const buffer = await res.arrayBuffer();
       const base64Img = Buffer.from(buffer).toString('base64');
       
@@ -85,9 +104,9 @@ export async function POST(request: Request) {
     const pdfOutput = pdf.output("arraybuffer");
     const buffer = Buffer.from(pdfOutput);
 
-    const token = process.env.TELEGRAM_BOT_TOKEN;
     const chatIds = process.env.TELEGRAM_CHAT_ID?.split(",") || [];
-    const captionText = `🔥 Заказ!\n👤 Клиент: ${name}\n📞 Тел: ${phone}\n📸 Фотографий: ${numPhotos} шт.\n\n`;
+    const safeName = name.replace(/[^\w\s]/g, "").slice(0, 50);
+    const captionText = `🔥 Заказ!\n👤 Клиент: ${safeName}\n📞 Тел: ${phone}\n📸 Фотографий: ${numPhotos} шт.\n\n`;
 
     for (const chatId of chatIds) {
       const cleanId = chatId.trim();
@@ -95,7 +114,7 @@ export async function POST(request: Request) {
 
       const tgFormData = new FormData();
       tgFormData.append("chat_id", cleanId);
-      tgFormData.append("document", new Blob([buffer], { type: "application/pdf" }), `Brelok_${name}.pdf`);
+      tgFormData.append("document", new Blob([buffer], { type: "application/pdf" }), `Brelok_${safeName}.pdf`);
       tgFormData.append("caption", captionText);
 
       await fetch(`https://api.telegram.org/bot${token}/sendDocument`, {
