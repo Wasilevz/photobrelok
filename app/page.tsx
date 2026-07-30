@@ -8,15 +8,18 @@ import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const router = useRouter();
-  const [imageToCrop, setImageToCrop] = useState<string | null>(null);
   const [slots, setSlots] = useState<(string | null)[]>(Array(10).fill(null));
   const [activeSlotIndex, setActiveSlotIndex] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isCropping, setIsCropping] = useState(false);
   const [showScrollHint, setShowScrollHint] = useState(true);
   const [showError, setShowError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Батч-загрузка: очередь фото, ожидающих обрезки, каждое привязано к своему слоту
+  const [cropQueue, setCropQueue] = useState<{ url: string; slotIndex: number }[]>([]);
+  const [totalInBatch, setTotalInBatch] = useState(0);
+  const imageToCrop = cropQueue[0]?.url ?? null;
 
   const revokeOldUrl = useCallback((url: string | null) => {
     if (url && url.startsWith("blob:")) {
@@ -30,22 +33,58 @@ export default function Home() {
   };
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setIsCropping(true);
-      setImageToCrop(URL.createObjectURL(e.target.files[0]));
-      e.target.value = "";
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const fileArray = Array.from(files);
+
+    // Слот, на который кликнули, заполняется первым (даже если уже занят — это "заменить")
+    const targetIndices: number[] = [];
+    if (activeSlotIndex !== null) targetIndices.push(activeSlotIndex);
+
+    // Остальные фото уходят в следующие свободные слоты по порядку
+    for (let i = 0; i < slots.length && targetIndices.length < fileArray.length; i++) {
+      if (i === activeSlotIndex) continue;
+      if (!slots[i]) targetIndices.push(i);
     }
+
+    const queue = fileArray.slice(0, targetIndices.length).map((file, i) => ({
+      url: URL.createObjectURL(file),
+      slotIndex: targetIndices[i],
+    }));
+
+    if (fileArray.length > targetIndices.length) {
+      setShowError(
+        `Добавлено ${queue.length} из ${fileArray.length} фото — все слоты заполнены (максимум 10)`
+      );
+    }
+
+    setCropQueue(queue);
+    setTotalInBatch(queue.length);
+    e.target.value = "";
   };
 
   const handleCropDone = (croppedImageUrl: string) => {
-    if (activeSlotIndex !== null) {
-      const newSlots = [...slots];
-      revokeOldUrl(newSlots[activeSlotIndex]);
-      newSlots[activeSlotIndex] = croppedImageUrl;
-      setSlots(newSlots);
+    const current = cropQueue[0];
+    if (current) {
+      setSlots((prev) => {
+        const newSlots = [...prev];
+        revokeOldUrl(newSlots[current.slotIndex]);
+        newSlots[current.slotIndex] = croppedImageUrl;
+        return newSlots;
+      });
     }
-    setImageToCrop(null);
-    setIsCropping(false);
+    const rest = cropQueue.slice(1);
+    setCropQueue(rest);
+    if (rest.length === 0) setTotalInBatch(0);
+  };
+
+  const handleCropCancel = () => {
+    const current = cropQueue[0];
+    if (current) revokeOldUrl(current.url);
+    const rest = cropQueue.slice(1);
+    setCropQueue(rest);
+    if (rest.length === 0) setTotalInBatch(0);
   };
 
   const handleRemoveSlot = (index: number, e: React.MouseEvent) => {
@@ -111,6 +150,7 @@ export default function Home() {
         ref={fileInputRef} 
         onChange={onFileChange} 
         accept="image/*" 
+        multiple
         className="hidden" 
       />
 
@@ -225,7 +265,7 @@ export default function Home() {
         <div className="text-center mb-3">
           <span className="text-xs text-gray-500 font-medium">
             {slots.filter(Boolean).length === 0
-              ? `Нажмите на кадр → чтобы добавить фото`
+              ? `Нажмите на кадр → можно выбрать сразу несколько фото`
               : slots.filter(Boolean).length < 6
                 ? `Ещё ${6 - slots.filter(Boolean).length} фото до оформления`
                 : `Отлично! Можно оформлять заказ`}
@@ -252,23 +292,14 @@ export default function Home() {
       </div>
 
       <div className="relative z-[99999]">
-        {isCropping && !imageToCrop && (
-          <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center">
-            <div className="text-white text-lg font-medium flex items-center gap-3">
-              <svg className="animate-spin h-6 w-6" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-              </svg>
-              Загрузка фото...
-            </div>
-          </div>
-        )}
-
         {imageToCrop && (
           <ImageCropper
+            key={imageToCrop}
             imageSrc={imageToCrop}
             onCropDone={handleCropDone}
-            onCancel={() => setImageToCrop(null)}
+            onCancel={handleCropCancel}
+            currentIndex={totalInBatch - cropQueue.length + 1}
+            total={totalInBatch}
           />
         )}
 
