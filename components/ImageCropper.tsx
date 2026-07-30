@@ -9,9 +9,11 @@ interface ImageCropperProps {
   imageSrc: string;
   onCropDone: (croppedImageUrl: string) => void;
   onCancel: () => void;
+  currentIndex?: number;
+  total?: number;
 }
 
-export default function ImageCropper({ imageSrc, onCropDone, onCancel }: ImageCropperProps) {
+export default function ImageCropper({ imageSrc, onCropDone, onCancel, currentIndex, total }: ImageCropperProps) {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
@@ -49,6 +51,11 @@ export default function ImageCropper({ imageSrc, onCropDone, onCancel }: ImageCr
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-black">
       <div className="relative flex-1 w-full h-full">
+        {total !== undefined && total > 1 && (
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 bg-black/70 text-white text-xs font-medium px-3 py-1.5 rounded-full">
+            Фото {currentIndex} из {total}
+          </div>
+        )}
         <Cropper
           image={imageSrc}
           crop={crop}
@@ -83,7 +90,7 @@ export default function ImageCropper({ imageSrc, onCropDone, onCancel }: ImageCr
             disabled={isProcessing}
             className="flex-1 py-3 px-4 bg-zinc-800 text-white rounded-lg font-medium hover:bg-zinc-700 transition-colors disabled:opacity-50"
           >
-            Отмена
+            {total !== undefined && total > 1 ? 'Пропустить' : 'Отмена'}
           </button>
           <button
             onClick={handleCrop}
