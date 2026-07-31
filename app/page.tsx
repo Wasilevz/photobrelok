@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import Image from "next/image";
 import ImageCropper from "@/components/ImageCropper";
 import OrderModal from "@/components/OrderModal";
@@ -8,11 +8,15 @@ import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const router = useRouter();
+  // TODO: уточните цену — сейчас взята из блока "Обычная цена" на /thanks
+  const PRICE_MDL = 250;
   const [slots, setSlots] = useState<(string | null)[]>(Array(10).fill(null));
   const [activeSlotIndex, setActiveSlotIndex] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showScrollHint, setShowScrollHint] = useState(true);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [showError, setShowError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -25,6 +29,10 @@ export default function Home() {
     if (url && url.startsWith("blob:")) {
       URL.revokeObjectURL(url);
     }
+  }, []);
+
+  useEffect(() => {
+    handleCarouselScroll();
   }, []);
 
   const handleSlotClick = (index: number) => {
@@ -87,6 +95,19 @@ export default function Home() {
     if (rest.length === 0) setTotalInBatch(0);
   };
 
+  const handleCarouselScroll = () => {
+    const el = scrollContainerRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 4);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+  };
+
+  const scrollCarousel = (direction: 'left' | 'right') => {
+    const el = scrollContainerRef.current;
+    if (!el) return;
+    el.scrollBy({ left: direction === 'left' ? -240 : 240, behavior: 'smooth' });
+  };
+
   const handleRemoveSlot = (index: number, e: React.MouseEvent) => {
     e.stopPropagation();
     const newSlots = [...slots];
@@ -125,7 +146,10 @@ export default function Home() {
         body: JSON.stringify({ name: userData.name, phone: userData.phone, photoUrls }),
       });
 
-      if (!apiRes.ok) throw new Error("Сбой отправки в Telegram (api/order)");
+      if (!apiRes.ok) {
+        const errData = await apiRes.json().catch(() => null);
+        throw new Error(errData?.error || "Сбой отправки заказа. Попробуйте ещё раз.");
+      }
 
       const { orderId } = await apiRes.json();
 
@@ -161,22 +185,37 @@ export default function Home() {
         <p className="text-gray-600 text-sm sm:text-base max-w-md mx-auto">
           Загрузите от 6 до 10 любимых фото — мы напечатаем их на плёнке и сделаем уникальный брелок
         </p>
+        <p className="mt-2 text-[#FF6B00] font-bold text-lg">
+          {PRICE_MDL} лей · Оплата при получении
+        </p>
       </div>
 
       <div className="relative w-full max-w-5xl mx-auto h-[220px] mt-8">
 
-        {showScrollHint && (
-          <div className="absolute right-4 sm:right-[8%] top-1/2 -translate-y-1/2 z-40 animate-bounce pointer-events-none">
-            <div className="bg-black/70 text-white text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5">
-              <span>← скролль →</span>
-            </div>
-          </div>
+        {canScrollLeft && (
+          <button
+            onClick={() => scrollCarousel('left')}
+            aria-label="Прокрутить влево"
+            className="absolute left-2 sm:left-4 top-3 z-[60] w-9 h-9 rounded-full bg-black/70 hover:bg-black/90 text-white text-lg flex items-center justify-center shadow-lg transition-colors"
+          >
+            ‹
+          </button>
+        )}
+        {canScrollRight && (
+          <button
+            onClick={() => scrollCarousel('right')}
+            aria-label="Прокрутить вправо"
+            className="absolute right-2 sm:right-4 top-3 z-[60] w-9 h-9 rounded-full bg-black/70 hover:bg-black/90 text-white text-lg flex items-center justify-center shadow-lg transition-colors animate-pulse"
+          >
+            ›
+          </button>
         )}
 
         <div
+          ref={scrollContainerRef}
           className="w-full h-full overflow-x-auto flex items-center pl-4 sm:pl-10 no-scrollbar"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-          onScroll={() => setShowScrollHint(false)}
+          onScroll={handleCarouselScroll}
         >
           <style>{`
             .no-scrollbar::-webkit-scrollbar { display: none !important; }
@@ -282,7 +321,7 @@ export default function Home() {
         >
           {slots.filter(Boolean).length < 6
             ? `Загрузите от 6 фото`
-            : `Оформить заказ`}
+            : `Оформить заказ — ${PRICE_MDL} лей`}
         </button>
         {slots.filter(Boolean).length >= 6 && (
           <p className="text-center text-[11px] text-gray-400 mt-2">
@@ -309,6 +348,7 @@ export default function Home() {
             onClose={() => setIsModalOpen(false)}
             onSubmit={handleFinalSubmit}
             isSubmitting={isSubmitting}
+            price={PRICE_MDL}
           />
         )}
       </div>
