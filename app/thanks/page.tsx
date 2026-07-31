@@ -10,7 +10,8 @@ function ThankYouContent() {
 
   const [timeLeft, setTimeLeft] = useState(600);
   const [isLoading, setIsLoading] = useState(false);
-  const [isAdded, setIsAdded] = useState(false);
+  const [status, setStatus] = useState<'pending' | 'accepted' | 'declined' | 'expired'>('pending');
+  const [upsellError, setUpsellError] = useState<string | null>(null);
   const timeLeftRef = useRef(timeLeft);
 
   useEffect(() => {
@@ -23,7 +24,13 @@ function ThankYouContent() {
         clearInterval(interval);
         return;
       }
-      setTimeLeft(prev => prev - 1);
+      setTimeLeft(prev => {
+        const next = prev - 1;
+        if (next <= 0) {
+          setStatus((s) => (s === 'pending' ? 'expired' : s));
+        }
+        return next;
+      });
     }, 1000);
     return () => clearInterval(interval);
   }, []);
@@ -36,18 +43,20 @@ function ThankYouContent() {
 
   const handleUpsell = async () => {
     setIsLoading(true);
+    setUpsellError(null);
     try {
-      await fetch('/api/telegram', {
+      const res = await fetch('/api/telegram', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: `🔥 <b>АПСЕЛЛ! Заказ #${orderId}</b>\nКлиент добавил ВТОРОЙ брелок (-40%).\nПоложите 2 шт. в посылку.`
         })
       });
-      setIsAdded(true);
+      if (!res.ok) throw new Error('Не получилось передать менеджеру');
+      setStatus('accepted');
     } catch (error) {
       console.error("Ошибка:", error);
-      setIsAdded(true);
+      setUpsellError('Не получилось оформить добавление. Попробуйте ещё раз — либо просто скажите об этом при звонке.');
     } finally {
       setIsLoading(false);
     }
@@ -74,7 +83,7 @@ function ThankYouContent() {
       </div>
 
       {/* 2. Оффер-апселл */}
-      {!isAdded && timeLeft > 0 ? (
+      {status === 'pending' ? (
         <div className="max-w-md w-full bg-white border-[3px] border-[#FF6B00] rounded-[40px] p-8 shadow-2xl relative overflow-hidden animate-in zoom-in duration-700">
           <div className="absolute top-0 right-0 bg-[#FF6B00] text-white px-6 py-2 rounded-bl-3xl font-black text-xs uppercase tracking-widest">
             В ту же посылку
@@ -116,6 +125,12 @@ function ThankYouContent() {
             </div>
           </div>
 
+          {upsellError && (
+            <p className="text-red-600 text-xs text-center mb-4 bg-red-50 rounded-lg py-2 px-3">
+              {upsellError}
+            </p>
+          )}
+
           <button
             onClick={handleUpsell}
             disabled={isLoading}
@@ -142,13 +157,13 @@ function ThankYouContent() {
           </p>
 
           <button
-            onClick={() => router.push('/')}
+            onClick={() => setStatus('declined')}
             className="w-full mt-4 py-4 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold rounded-xl transition-colors text-sm"
           >
             Нет, спасибо
           </button>
         </div>
-      ) : (
+      ) : status === 'accepted' ? (
         <div className="max-w-md w-full bg-zinc-900 text-white rounded-[40px] p-10 text-center animate-in fade-in zoom-in duration-500">
           <div className="w-20 h-20 bg-[#FF6B00]/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <Package className="w-10 h-10 text-[#FF6B00]" />
@@ -156,19 +171,19 @@ function ThankYouContent() {
           <h2 className="text-2xl font-black uppercase">Отличный выбор!</h2>
           <p className="text-zinc-400 mt-3">Мы добавили второй брелок в вашу посылку. <br />Сэкономили 100 леев!</p>
         </div>
-      )}
-
-      {/* Социальное доказательство */}
-      <div className="max-w-md w-full mt-8 flex items-center justify-center gap-2 text-sm text-gray-400">
-        <div className="flex -space-x-2">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-300 to-orange-500 border-2 border-white flex items-center justify-center text-white text-xs font-bold">
-              {String.fromCharCode(64 + i)}
-            </div>
-          ))}
+      ) : (
+        <div className="max-w-md w-full bg-white border border-zinc-200 rounded-[40px] p-8 text-center">
+          <div className="w-16 h-16 bg-zinc-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <CheckCircle2 className="w-8 h-8 text-zinc-400" />
+          </div>
+          <h2 className="text-xl font-bold">Хорошо, увидимся!</h2>
+          <p className="text-gray-400 mt-2 text-sm">
+            {status === 'expired'
+              ? 'Предложение по второму брелоку истекло, но ваш основной заказ уже у нас в работе.'
+              : 'Ваш заказ уже у нас в работе — мы позвоним для подтверждения.'}
+          </p>
         </div>
-        <span>уже сделали свои брелки сегодня</span>
-      </div>
+      )}
 
       {/* Инфо */}
       <div className="max-w-md w-full mt-8 space-y-3">
