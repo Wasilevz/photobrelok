@@ -321,11 +321,11 @@ export default function Home() {
         >
           {slots.filter(Boolean).length < 6
             ? `Загрузите от 6 фото`
-            : `Оформить заказ — ${PRICE_MDL} лей`}
+            : `Оформить заказ`}
         </button>
         {slots.filter(Boolean).length >= 6 && (
           <p className="text-center text-[11px] text-gray-400 mt-2">
-            {slots.filter(Boolean).length}/10 фото · Оплата при получении
+            {slots.filter(Boolean).length}/10 фото
           </p>
         )}
       </div>
@@ -348,7 +348,6 @@ export default function Home() {
             onClose={() => setIsModalOpen(false)}
             onSubmit={handleFinalSubmit}
             isSubmitting={isSubmitting}
-            price={PRICE_MDL}
           />
         )}
       </div>
