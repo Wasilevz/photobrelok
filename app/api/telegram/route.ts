@@ -9,24 +9,33 @@ export async function POST(req: Request) {
     }
 
     const botToken = process.env.TELEGRAM_BOT_TOKEN;
-    const chatId = process.env.TELEGRAM_CHAT_ID;
+    const chatIdsRaw = process.env.TELEGRAM_CHAT_ID;
 
-    if (!botToken || !chatId) {
+    if (!botToken || !chatIdsRaw) {
       return NextResponse.json({ error: 'Ключи Telegram не найдены' }, { status: 500 });
     }
 
-    const plainMessage = message.replace(/<[^>]*>/g, "");
+    // Поддержка нескольких получателей через запятую — как в /api/order
+    const chatIds = chatIdsRaw.split(",").map((id) => id.trim()).filter(Boolean);
 
-    const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text: plainMessage,
-      }),
-    });
+    const results = await Promise.all(
+      chatIds.map((chatId) =>
+        fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: message,
+            parse_mode: 'HTML',
+          }),
+        })
+      )
+    );
 
-    if (!response.ok) throw new Error('Сбой на стороне Telegram');
+    const allFailed = results.every((r) => !r.ok);
+    if (allFailed) {
+      throw new Error('Сбой на стороне Telegram: ни один получатель не подтвердил доставку');
+    }
 
     return NextResponse.json({ success: true });
   } catch (error: unknown) {
