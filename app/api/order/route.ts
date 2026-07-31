@@ -76,11 +76,14 @@ export async function POST(request: Request) {
         pdf.roundedRect(currentX, startY + stripHeight - holeMarginY - holeH, holeW, holeH, cornerR, cornerR, "F");
     }
 
+    let failedPhotos = 0;
+
     for (let i = 0; i < numPhotos; i++) {
       const safeUrl = photoUrls[i].replace("/upload/", "/upload/f_jpg,q_auto:best/");
       const res = await fetch(safeUrl);
       if (!res.ok) {
         console.error(`Не удалось загрузить фото ${i + 1}: ${res.status} ${res.statusText}`);
+        failedPhotos++;
         continue;
       }
       const buffer = await res.arrayBuffer();
@@ -96,7 +99,9 @@ export async function POST(request: Request) {
     const buffer = Buffer.from(pdfOutput);
 
     const chatIds = process.env.TELEGRAM_CHAT_ID?.split(",") || [];
-    const captionText = `🔥 Новый заказ #${orderId}\n👤 Клиент: ${safeName}\n📞 Тел: ${phone}\n📸 Фотографий: ${numPhotos} шт.`;
+    const captionText = `🔥 Новый заказ #${orderId}\n👤 Клиент: ${safeName}\n📞 Тел: ${phone}\n📸 Фотографий: ${numPhotos} шт.${failedPhotos > 0 ? `\n⚠️ НЕ загрузилось фото: ${failedPhotos} — проверьте макет перед печатью!` : ''}`;
+
+    let deliveredToAtLeastOne = false;
 
     for (const chatId of chatIds) {
       const cleanId = chatId.trim();
@@ -107,10 +112,24 @@ export async function POST(request: Request) {
       tgFormData.append("document", new Blob([buffer], { type: "application/pdf" }), `Brelok_${orderId}_${safeName}.pdf`);
       tgFormData.append("caption", captionText);
 
-      await fetch(`https://api.telegram.org/bot${token}/sendDocument`, {
+      const tgRes = await fetch(`https://api.telegram.org/bot${token}/sendDocument`, {
         method: "POST",
         body: tgFormData,
       });
+
+      if (tgRes.ok) {
+        deliveredToAtLeastOne = true;
+      } else {
+        console.error(`Не удалось отправить заказ #${orderId} в чат ${cleanId}: ${tgRes.status}`);
+      }
+    }
+
+    if (!deliveredToAtLeastOne) {
+      // Ни один получатель не получил заказ — клиенту нельзя показывать "успех"
+      return NextResponse.json(
+        { error: "Заказ создан, но не удалось уведомить менеджера. Свяжитесь с нами напрямую." },
+        { status: 502 }
+      );
     }
 
     return NextResponse.json({ success: true, orderId });
