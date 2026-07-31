@@ -5,10 +5,9 @@ interface OrderModalProps {
   onClose: () => void;
   onSubmit: (data: { name: string; phone: string }) => void;
   isSubmitting: boolean;
-  price: number;
 }
 
-export default function OrderModal({ isOpen, onClose, onSubmit, isSubmitting, price }: OrderModalProps) {
+export default function OrderModal({ isOpen, onClose, onSubmit, isSubmitting }: OrderModalProps) {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [phoneError, setPhoneError] = useState('');
@@ -62,8 +61,7 @@ export default function OrderModal({ isOpen, onClose, onSubmit, isSubmitting, pr
         </button>
 
         <h2 id="order-modal-title" className="text-2xl font-bold text-white mb-2">Почти готово!</h2>
-        <p className="text-zinc-400 mb-1 text-sm">Оставьте контакт — перезвоним для подтверждения в течение 30 минут</p>
-        <p className="text-[#FF6B00] font-bold mb-6 text-sm">К оплате при получении: {price} лей</p>
+        <p className="text-zinc-400 mb-6 text-sm">Оставьте контакт — свяжемся для подтверждения в течение 30 минут</p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
