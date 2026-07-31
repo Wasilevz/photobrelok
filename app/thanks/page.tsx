@@ -78,7 +78,7 @@ function ThankYouContent() {
           Номер заказа: <span className="text-black bg-zinc-200 px-2 py-1 rounded font-mono">#{orderId}</span>
         </p>
         <p className="text-gray-400 text-sm">
-          Мы перезвоним вам в течение 30 минут для подтверждения
+          Мы свяжемся с вами в течение 30 минут для подтверждения
         </p>
       </div>
 
@@ -86,7 +86,7 @@ function ThankYouContent() {
       {status === 'pending' ? (
         <div className="max-w-md w-full bg-white border-[3px] border-[#FF6B00] rounded-[40px] p-8 shadow-2xl relative overflow-hidden animate-in zoom-in duration-700">
           <div className="absolute top-0 right-0 bg-[#FF6B00] text-white px-6 py-2 rounded-bl-3xl font-black text-xs uppercase tracking-widest">
-            В ту же посылку
+            В том же заказе
           </div>
 
           <div className="mb-4">
@@ -146,15 +146,11 @@ function ThankYouContent() {
               </span>
             ) : (
               <span className="flex items-center justify-center gap-2">
-                Добавить второй брелок за 150 лей
+                Да, добавить со скидкой
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </span>
             )}
           </button>
-
-          <p className="text-[11px] text-gray-400 text-center mt-4">
-            Оплата при получении · Никаких предоплат
-          </p>
 
           <button
             onClick={() => setStatus('declined')}
@@ -215,4 +211,3 @@ export default function ThankYouPage() {
     </Suspense>
   );
 }
- 
