@@ -5,9 +5,11 @@ import Image from "next/image";
 import ImageCropper from "@/components/ImageCropper";
 import OrderModal from "@/components/OrderModal";
 import { useRouter } from 'next/navigation';
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function Home() {
   const router = useRouter();
+  const { lang, setLang, dict } = useLanguage();
   // TODO: уточните цену — сейчас взята из блока "Обычная цена" на /thanks
   const PRICE_MDL = 250;
   const [slots, setSlots] = useState<(string | null)[]>(Array(10).fill(null));
@@ -62,9 +64,7 @@ export default function Home() {
     }));
 
     if (fileArray.length > targetIndices.length) {
-      setShowError(
-        `Добавлено ${queue.length} из ${fileArray.length} фото — все слоты заполнены (максимум 10)`
-      );
+      setShowError(dict.home.uploadTruncated(queue.length, fileArray.length));
     }
 
     setCropQueue(queue);
@@ -136,19 +136,19 @@ export default function Home() {
         );
         const data = await cloudRes.json();
 
-        if (!cloudRes.ok) throw new Error("Ошибка Cloudinary. Проверьте настройки Upload Preset.");
+        if (!cloudRes.ok) throw new Error(dict.errors.uploadFailed);
         photoUrls.push(data.secure_url);
       }
 
       const apiRes = await fetch("/api/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: userData.name, phone: userData.phone, photoUrls }),
+        body: JSON.stringify({ name: userData.name, phone: userData.phone, photoUrls, lang }),
       });
 
       if (!apiRes.ok) {
         const errData = await apiRes.json().catch(() => null);
-        throw new Error(errData?.error || "Сбой отправки заказа. Попробуйте ещё раз.");
+        throw new Error(errData?.error || dict.errors.genericSubmit);
       }
 
       const { orderId } = await apiRes.json();
@@ -159,7 +159,7 @@ export default function Home() {
       router.push(`/thanks?orderId=${orderId}`);
 
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Неизвестная ошибка";
+      const msg = err instanceof Error ? err.message : dict.errors.unknown;
       setShowError(msg);
     } finally {
       setIsSubmitting(false);
@@ -178,15 +178,23 @@ export default function Home() {
         className="hidden" 
       />
 
+      <button
+        onClick={() => setLang(lang === 'ru' ? 'ro' : 'ru')}
+        aria-label="Schimbă limba / Сменить язык"
+        className="fixed top-4 right-4 z-[70] bg-white border border-gray-200 shadow-md rounded-full px-4 py-2 text-sm font-bold text-gray-700 hover:bg-gray-50 active:scale-95 transition-all"
+      >
+        {lang === 'ru' ? '🇷🇴 RO' : '🇲🇩 RU'}
+      </button>
+
       <div className="max-w-xl mx-auto text-center mb-10 px-4">
         <h1 className="text-3xl font-extrabold tracking-tight text-black sm:text-4xl mb-3">
-          Фото-брелок своими руками
+          {dict.home.title}
         </h1>
         <p className="text-gray-600 text-sm sm:text-base max-w-md mx-auto">
-          Загрузите от 6 до 10 любимых фото — мы напечатаем их на плёнке и сделаем уникальный брелок
+          {dict.home.subtitle}
         </p>
         <p className="mt-2 text-[#FF6B00] font-bold text-lg">
-          {PRICE_MDL} лей · Оплата при получении
+          {dict.home.priceLine(PRICE_MDL)}
         </p>
       </div>
 
@@ -195,7 +203,7 @@ export default function Home() {
         {canScrollLeft && (
           <button
             onClick={() => scrollCarousel('left')}
-            aria-label="Прокрутить влево"
+            aria-label={lang === 'ru' ? 'Прокрутить влево' : 'Derulează la stânga'}
             className="absolute left-2 sm:left-4 top-3 z-[60] w-9 h-9 rounded-full bg-black/70 hover:bg-black/90 text-white text-lg flex items-center justify-center shadow-lg transition-colors"
           >
             ‹
@@ -204,7 +212,7 @@ export default function Home() {
         {canScrollRight && (
           <button
             onClick={() => scrollCarousel('right')}
-            aria-label="Прокрутить вправо"
+            aria-label={lang === 'ru' ? 'Прокрутить вправо' : 'Derulează la dreapta'}
             className="absolute right-2 sm:right-4 top-3 z-[60] w-9 h-9 rounded-full bg-black/70 hover:bg-black/90 text-white text-lg flex items-center justify-center shadow-lg transition-colors animate-pulse"
           >
             ›
@@ -226,7 +234,7 @@ export default function Home() {
             <div className="absolute left-[8px] top-1/2 -translate-y-1/2 w-[35px] aspect-square z-10 overflow-hidden rounded-full drop-shadow-md pointer-events-none">
               <Image
                 src="/ring.png"
-                alt="Кольцо"
+                alt=""
                 width={35}
                 height={35}
                 className="w-full h-full object-cover transform-gpu scale-[1.1] translate-x-[1px] translate-y-[0.5px] md:scale-[1.3] md:translate-x-[2px] md:translate-y-[1px]"
@@ -257,26 +265,26 @@ export default function Home() {
                 >
                   {url ? (
                     <>
-                      <Image src={url} alt={`Кадр ${index + 1}`} width={105} height={105} className="w-full h-full object-cover" />
+                      <Image src={url} alt={`${index + 1}`} width={105} height={105} className="w-full h-full object-cover" />
                       <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity gap-2">
                         <button
                           onClick={(e) => { e.stopPropagation(); handleSlotClick(index); }}
                           className="bg-white/20 hover:bg-white/30 text-white text-xs px-2 py-1 rounded backdrop-blur-sm"
                         >
-                          Заменить
+                          {dict.home.replace}
                         </button>
                         <button
                           onClick={(e) => handleRemoveSlot(index, e)}
                           className="bg-red-500/80 hover:bg-red-500 text-white text-xs px-2 py-1 rounded backdrop-blur-sm"
                         >
-                          Удалить
+                          {dict.home.remove}
                         </button>
                       </div>
                     </>
                   ) : (
                     <div className="flex flex-col items-center text-zinc-500 group-hover:text-gray-300">
                       <span className="text-3xl mb-1">+</span>
-                      <span className="text-[10px] font-medium opacity-70">нажми</span>
+                      <span className="text-[10px] font-medium opacity-70">{dict.home.slotHint}</span>
                     </div>
                   )}
                 </div>
@@ -290,7 +298,7 @@ export default function Home() {
             <div className="absolute top-[-50px] bottom-[-50px] left-[25px] right-[-1000px] bg-gray-100 z-30 pointer-events-none" />
             <Image
               src="/kodak.png"
-              alt="Брелок Kodak"
+              alt=""
               width={379}
               height={658}
               className="h-full w-auto block relative z-40 pointer-events-none"
@@ -304,10 +312,10 @@ export default function Home() {
         <div className="text-center mb-3">
           <span className="text-xs text-gray-500 font-medium">
             {slots.filter(Boolean).length === 0
-              ? `Нажмите на кадр → можно выбрать сразу несколько фото`
+              ? dict.home.helperEmpty
               : slots.filter(Boolean).length < 6
-                ? `Ещё ${6 - slots.filter(Boolean).length} фото до оформления`
-                : `Отлично! Можно оформлять заказ`}
+                ? dict.home.helperMore(6 - slots.filter(Boolean).length)
+                : dict.home.helperReady}
           </span>
         </div>
         <button
@@ -320,12 +328,12 @@ export default function Home() {
           }`}
         >
           {slots.filter(Boolean).length < 6
-            ? `Загрузите от 6 фото`
-            : `Оформить заказ`}
+            ? dict.home.ctaUpload
+            : dict.home.ctaOrder}
         </button>
         {slots.filter(Boolean).length >= 6 && (
           <p className="text-center text-[11px] text-gray-400 mt-2">
-            {slots.filter(Boolean).length}/10 фото
+            {dict.home.photoCount(slots.filter(Boolean).length)}
           </p>
         )}
       </div>
