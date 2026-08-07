@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useLanguage } from "@/context/LanguageContext";
 
 interface OrderModalProps {
   isOpen: boolean;
@@ -8,6 +9,7 @@ interface OrderModalProps {
 }
 
 export default function OrderModal({ isOpen, onClose, onSubmit, isSubmitting }: OrderModalProps) {
+  const { dict } = useLanguage();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [phoneError, setPhoneError] = useState('');
@@ -29,7 +31,7 @@ export default function OrderModal({ isOpen, onClose, onSubmit, isSubmitting }: 
   const validatePhone = (value: string): boolean => {
     const cleaned = value.replace(/[\s\-\(\)]/g, '');
     if (!/^\d{8,12}$/.test(cleaned)) {
-      setPhoneError('Введите номер телефона без кода страны');
+      setPhoneError(dict.orderModal.phoneError);
       return false;
     }
     setPhoneError('');
@@ -55,17 +57,17 @@ export default function OrderModal({ isOpen, onClose, onSubmit, isSubmitting }: 
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-zinc-400 hover:text-white text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-zinc-800 transition-colors"
-          aria-label="Закрыть"
+          aria-label={dict.orderModal.close}
         >
           ✕
         </button>
 
-        <h2 id="order-modal-title" className="text-2xl font-bold text-white mb-2">Почти готово!</h2>
-        <p className="text-zinc-400 mb-6 text-sm">Оставьте контакт — свяжемся для подтверждения в течение 30 минут</p>
+        <h2 id="order-modal-title" className="text-2xl font-bold text-white mb-2">{dict.orderModal.title}</h2>
+        <p className="text-zinc-400 mb-6 text-sm">{dict.orderModal.subtitle}</p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
-            <label htmlFor="customer-name" className="block text-zinc-400 text-sm mb-1">Как к вам обращаться?</label>
+            <label htmlFor="customer-name" className="block text-zinc-400 text-sm mb-1">{dict.orderModal.nameLabel}</label>
             <input
               id="customer-name"
               ref={nameRef}
@@ -74,12 +76,12 @@ export default function OrderModal({ isOpen, onClose, onSubmit, isSubmitting }: 
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#FF6B00] focus:ring-1 focus:ring-[#FF6B00]"
-              placeholder="Николай Гергич"
+              placeholder={dict.orderModal.namePlaceholder}
             />
           </div>
 
           <div>
-            <label htmlFor="customer-phone" className="block text-zinc-400 text-sm mb-1">Номер телефона</label>
+            <label htmlFor="customer-phone" className="block text-zinc-400 text-sm mb-1">{dict.orderModal.phoneLabel}</label>
             <input
               id="customer-phone"
               type="tel"
@@ -92,7 +94,7 @@ export default function OrderModal({ isOpen, onClose, onSubmit, isSubmitting }: 
                   ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
                   : 'border-zinc-700 focus:border-[#FF6B00] focus:ring-[#FF6B00]'
               }`}
-              placeholder="60 123 456"
+              placeholder={dict.orderModal.phonePlaceholder}
             />
             {phoneError && (
               <p className="text-red-400 text-xs mt-1">{phoneError}</p>
@@ -108,7 +110,7 @@ export default function OrderModal({ isOpen, onClose, onSubmit, isSubmitting }: 
                   : "bg-[#FF6B00] text-white hover:bg-[#E65C00] active:scale-[0.98] shadow-lg shadow-orange-200"
               }`}
           >
-            {isSubmitting ? "Отправка..." : "Подтвердить заказ"}
+            {isSubmitting ? dict.orderModal.submitting : dict.orderModal.submit}
           </button>
         </form>
       </div>
