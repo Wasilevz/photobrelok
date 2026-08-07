@@ -12,7 +12,7 @@ function generateOrderId(): string {
 
 export async function POST(request: Request) {
   try {
-    const { name, phone, photoUrls } = await request.json();
+    const { name, phone, photoUrls, lang } = await request.json();
 
     if (!name || typeof name !== "string" || name.trim().length === 0) {
       return NextResponse.json({ error: "Имя клиента обязательно" }, { status: 400 });
@@ -99,7 +99,8 @@ export async function POST(request: Request) {
     const buffer = Buffer.from(pdfOutput);
 
     const chatIds = process.env.TELEGRAM_CHAT_ID?.split(",") || [];
-    const captionText = `🔥 Новый заказ #${orderId}\n👤 Клиент: ${safeName}\n📞 Тел: ${phone}\n📸 Фотографий: ${numPhotos} шт.${failedPhotos > 0 ? `\n⚠️ НЕ загрузилось фото: ${failedPhotos} — проверьте макет перед печатью!` : ''}`;
+    const langNote = lang === "ro" ? `\n🌐 Клиент оформлял на румынском (говорите по-румынски при звонке)` : '';
+    const captionText = `🔥 Новый заказ #${orderId}\n👤 Клиент: ${safeName}\n📞 Тел: ${phone}\n📸 Фотографий: ${numPhotos} шт.${failedPhotos > 0 ? `\n⚠️ НЕ загрузилось фото: ${failedPhotos} — проверьте макет перед печатью!` : ''}${langNote}`;
 
     let deliveredToAtLeastOne = false;
 
