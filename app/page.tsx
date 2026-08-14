@@ -88,12 +88,22 @@ export default function Home() {
     if (rest.length === 0) setTotalInBatch(0);
   };
 
+  // --- ОБНОВЛЕННАЯ ФУНКЦИЯ ОТМЕНЫ (Очистка памяти) ---
   const handleCropCancel = () => {
     const current = cropQueue[0];
     if (current) revokeOldUrl(current.url);
+    
     const rest = cropQueue.slice(1);
-    setCropQueue(rest);
-    if (rest.length === 0) setTotalInBatch(0);
+    
+    // Если пользователь отменяет, очищаем ссылки для всей оставшейся очереди
+    if (rest.length > 0) {
+      rest.forEach((item) => revokeOldUrl(item.url));
+      setCropQueue([]);
+      setTotalInBatch(0);
+    } else {
+      setCropQueue([]);
+      setTotalInBatch(0);
+    }
   };
 
   const handleCarouselScroll = () => {
