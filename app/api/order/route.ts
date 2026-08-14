@@ -92,22 +92,35 @@ export async function POST(request: Request) {
 
     let failedPhotos = 0;
 
-    for (let i = 0; i < numPhotos; i++) {
-      const safeUrl = photoUrls[i].replace("/upload/", "/upload/f_jpg,q_auto:best/");
-      const res = await fetch(safeUrl);
-      if (!res.ok) {
-        console.error(`Не удалось загрузить фото ${i + 1}: ${res.status} ${res.statusText}`);
-        failedPhotos++;
-        continue;
+    // --- НАЧАЛО БЛОКА ПАРАЛЛЕЛЬНОЙ ЗАГРУЗКИ ---
+    const photoPromises = photoUrls.map(async (url: string, index: number) => {
+      try {
+        const safeUrl = url.replace("/upload/", "/upload/f_jpg,q_auto:best/");
+        const res = await fetch(safeUrl);
+        if (!res.ok) {
+          console.error(`Не удалось загрузить фото ${index + 1}: ${res.status} ${res.statusText}`);
+          return null;
+        }
+        const buffer = await res.arrayBuffer();
+        return Buffer.from(buffer).toString('base64');
+      } catch (err) {
+        console.error(`Сбой fetch для URL: ${url}`, err);
+        return null;
       }
-      const buffer = await res.arrayBuffer();
-      const base64Img = Buffer.from(buffer).toString('base64');
+    });
 
+    const fetchedImages = await Promise.all(photoPromises);
+
+    fetchedImages.forEach((base64Img, i) => {
+      if (!base64Img) {
+        failedPhotos++;
+        return;
+      }
       const xPos = startX + leftOffset + (i * (photoSize + gap));
       const yPos = startY + ((stripHeight - photoSize) / 2);
-
       pdf.addImage(`data:image/jpeg;base64,${base64Img}`, "JPEG", xPos, yPos, photoSize, photoSize);
-    }
+    });
+    // --- КОНЕЦ БЛОКА ПАРАЛЛЕЛЬНОЙ ЗАГРУЗКИ ---
 
     const pdfOutput = pdf.output("arraybuffer");
     const buffer = Buffer.from(pdfOutput);
@@ -157,7 +170,6 @@ export async function POST(request: Request) {
     }
 
     if (!deliveredToAtLeastOne) {
-      // Ни один получатель не получил заказ — клиенту нельзя показывать "успех"
       return NextResponse.json(
         { error: "Заказ создан, но не удалось уведомить менеджера. Свяжитесь с нами напрямую." },
         { status: 502 }
