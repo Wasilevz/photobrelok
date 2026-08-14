@@ -4,6 +4,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import Image from "next/image";
 import ImageCropper from "@/components/ImageCropper";
 import OrderModal from "@/components/OrderModal";
+import type { DeliveryData } from "@/components/OrderModal";
 import { useRouter } from 'next/navigation';
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -116,7 +117,7 @@ export default function Home() {
     setSlots(newSlots);
   };
 
-  const handleFinalSubmit = async (userData: { name: string; phone: string }) => {
+  const handleFinalSubmit = async (userData: { name: string; phone: string; delivery: DeliveryData }) => {
     setIsSubmitting(true);
     try {
       const photoUrls: string[] = [];
@@ -143,7 +144,13 @@ export default function Home() {
       const apiRes = await fetch("/api/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: userData.name, phone: userData.phone, photoUrls, lang }),
+        body: JSON.stringify({
+          name: userData.name,
+          phone: userData.phone,
+          photoUrls,
+          lang,
+          delivery: userData.delivery,
+        }),
       });
 
       if (!apiRes.ok) {
