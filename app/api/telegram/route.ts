@@ -1,5 +1,14 @@
 import { NextResponse } from 'next/server';
 
+// Функция экранирования спецсимволов для безопасной отправки parse_mode: 'HTML'
+function escapeHtml(text: string): string {
+  if (!text) return "";
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
 export async function POST(req: Request) {
   try {
     const { message } = await req.json();
@@ -18,6 +27,9 @@ export async function POST(req: Request) {
     // Поддержка нескольких получателей через запятую — как в /api/order
     const chatIds = chatIdsRaw.split(",").map((id) => id.trim()).filter(Boolean);
 
+    // Применяем экранирование к тексту
+    const safeMessage = escapeHtml(message);
+
     const results = await Promise.all(
       chatIds.map((chatId) =>
         fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
@@ -25,7 +37,7 @@ export async function POST(req: Request) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             chat_id: chatId,
-            text: message,
+            text: safeMessage, // Передаем очищенный текст
             parse_mode: 'HTML',
           }),
         })
