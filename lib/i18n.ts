@@ -1,4 +1,5 @@
 export type Locale = "ru" | "ro";
+export type DeliveryMethod = "posta" | "novapost" | "pickup";
 
 export interface Dict {
   meta: {
@@ -39,6 +40,31 @@ export interface Dict {
     submitting: string;
     submit: string;
     close: string;
+    delivery: {
+      label: string;
+      posta: string;
+      postaPrice: string;
+      novapost: string;
+      novapostPrice: string;
+      pickup: string;
+      pickupPrice: string;
+      pickupAddress: string;
+      pickupHours: string;
+      postalCodeLabel: string;
+      postalCodePlaceholder: string;
+      surnameLabel: string;
+      surnamePlaceholder: string;
+      streetLabel: string;
+      streetPlaceholder: string;
+      cityLabel: string;
+      cityPlaceholder: string;
+      districtLabel: string;
+      districtPlaceholder: string;
+      branchLabel: string;
+      branchPlaceholder: string;
+      fieldRequired: string;
+      chooseMethod: string;
+    };
   };
   errors: {
     genericSubmit: string;
@@ -108,19 +134,44 @@ export const translations: Record<Locale, Dict> = {
       zoomHigh: "Много",
       skip: "Пропустить",
       cancel: "Отмена",
-      crop: "Ообрезать",
+      crop: "Обрезать",
     },
     orderModal: {
       title: "Почти готово!",
       subtitle: "Оставьте контакт — свяжемся для подтверждения в течение 30 минут",
-      nameLabel: "Как к вам обращаться?",
-      namePlaceholder: "Николай Гергич",
+      nameLabel: "Ваше имя",
+      namePlaceholder: "Николай",
       phoneLabel: "Номер телефона",
       phonePlaceholder: "60 123 456",
       phoneError: "Введите номер телефона без кода страны",
       submitting: "Отправка...",
       submit: "Подтвердить заказ",
       close: "Закрыть",
+      delivery: {
+        label: "Способ получения",
+        posta: "Poșta Moldovei",
+        postaPrice: "30 лей",
+        novapost: "Nova Poshta",
+        novapostPrice: "55 лей",
+        pickup: "Самовывоз",
+        pickupPrice: "Бесплатно",
+        pickupAddress: "ул. A. Bernardazzi 64, Кишинёв",
+        pickupHours: "Ежедневно с 12:00 до 22:00",
+        postalCodeLabel: "Почтовый индекс",
+        postalCodePlaceholder: "MD-2001",
+        surnameLabel: "Фамилия (нужна для почты)",
+        surnamePlaceholder: "Гергич",
+        streetLabel: "Улица (если есть)",
+        streetPlaceholder: "ул. Штефан чел Маре, 10",
+        cityLabel: "Город или село",
+        cityPlaceholder: "Кишинёв",
+        districtLabel: "Район",
+        districtPlaceholder: "Например, Единецкий",
+        branchLabel: "Номер отделения Nova Poshta",
+        branchPlaceholder: "Например, 25",
+        fieldRequired: "Заполните это поле",
+        chooseMethod: "Выберите способ получения",
+      },
     },
     errors: {
       genericSubmit: "Сбой отправки заказа. Попробуйте ещё раз.",
@@ -195,14 +246,39 @@ export const translations: Record<Locale, Dict> = {
     orderModal: {
       title: "Aproape gata!",
       subtitle: "Lasă-ne un contact — te contactăm pentru confirmare în 30 de minute",
-      nameLabel: "Cum să-ți spunem?",
-      namePlaceholder: "Ion Popescu",
+      nameLabel: "Numele tău",
+      namePlaceholder: "Ion",
       phoneLabel: "Număr de telefon",
       phonePlaceholder: "069 123 456",
       phoneError: "Introdu numărul de telefon fără prefixul țării",
       submitting: "Se trimite...",
       submit: "Confirmă comanda",
       close: "Închide",
+      delivery: {
+        label: "Metoda de livrare",
+        posta: "Poșta Moldovei",
+        postaPrice: "30 lei",
+        novapost: "Nova Poshta",
+        novapostPrice: "55 lei",
+        pickup: "Ridicare personală",
+        pickupPrice: "Gratuit",
+        pickupAddress: "str. A. Bernardazzi 64, Chișinău",
+        pickupHours: "Zilnic, 12:00–22:00",
+        postalCodeLabel: "Cod poștal",
+        postalCodePlaceholder: "MD-2001",
+        surnameLabel: "Numele de familie (necesar pentru poștă)",
+        surnamePlaceholder: "Popescu",
+        streetLabel: "Stradă (dacă există)",
+        streetPlaceholder: "str. Ștefan cel Mare, 10",
+        cityLabel: "Oraș sau sat",
+        cityPlaceholder: "Chișinău",
+        districtLabel: "Raion",
+        districtPlaceholder: "De exemplu, Edineț",
+        branchLabel: "Numărul filialei Nova Poshta",
+        branchPlaceholder: "De exemplu, 25",
+        fieldRequired: "Completează acest câmp",
+        chooseMethod: "Alege metoda de livrare",
+      },
     },
     errors: {
       genericSubmit: "Comanda nu a putut fi trimisă. Încearcă din nou.",
