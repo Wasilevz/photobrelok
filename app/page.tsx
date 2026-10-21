@@ -415,6 +415,7 @@ export default function Home() {
           </p>
         )}
       </div>
+      </section>
       <section className="final-cta content-section"><div className="section-eyebrow">{lang === 'ru' ? 'СОХРАНИТЕ СВОЮ ИСТОРИЮ' : 'PĂSTREAZĂ POVESTEA TA'}</div><h2>{lang === 'ru' ? 'Ваши любимые моменты — всегда с собой.' : 'Momentele tale preferate, mereu cu tine.'}</h2><button onClick={() => document.getElementById('constructor')?.scrollIntoView({ behavior: 'smooth' })} className="primary-button">{lang === 'ru' ? 'Создать брелок за 250 MDL' : 'Creează brelocul — 250 MDL'} <span>↗</span></button><p>{lang === 'ru' ? 'Персональный подарок · Деревянная коробка · Изготовление 1–2 дня' : 'Cadou personalizat · Cutie din lemn · Realizat în 1–2 zile'}</p></section>
 
       <div className="relative z-[99999]">
