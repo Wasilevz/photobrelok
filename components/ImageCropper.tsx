@@ -69,7 +69,7 @@ export default function ImageCropper({ imageSrc, onCropDone, onCancel, currentIn
         />
       </div>
 
-      <div className="bg-zinc-900 p-6 flex flex-col items-center gap-4">
+      <div className="bg-[#0D0D0D] p-6 flex flex-col items-center gap-4">
         <div className="w-full max-w-md">
           <div className="flex justify-between text-xs text-zinc-500 mb-1">
             <span>{dict.cropper.zoomLow}</span>
@@ -82,7 +82,7 @@ export default function ImageCropper({ imageSrc, onCropDone, onCancel, currentIn
             max={3}
             step={0.1}
             onChange={(e) => setZoom(Number(e.target.value))}
-            className="w-full accent-white"
+            className="w-full accent-[#FFC400]"
           />
         </div>
 
@@ -97,7 +97,7 @@ export default function ImageCropper({ imageSrc, onCropDone, onCancel, currentIn
           <button
             onClick={handleCrop}
             disabled={isProcessing || !croppedAreaPixels}
-            className="flex-1 py-3 px-4 bg-white text-black rounded-lg font-bold hover:bg-zinc-200 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+            className="flex-1 py-3 px-4 bg-[#FFC400] text-[#0D0D0D] rounded-lg font-bold hover:bg-[#E8B300] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {isProcessing ? (
               <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">

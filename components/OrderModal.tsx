@@ -99,14 +99,14 @@ export default function OrderModal({ isOpen, onClose, onSubmit, isSubmitting }: 
   const methodCardClass = (m: DeliveryMethod) =>
     `w-full text-left px-4 py-3 rounded-xl border-2 transition-colors flex items-center justify-between gap-3 ${
       method === m
-        ? 'border-[#FF6B00] bg-[#FF6B00]/10'
+        ? 'border-[#FFC400] bg-[#FFC400]/10'
         : 'border-zinc-700 bg-zinc-950 hover:border-zinc-500'
     }`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 overflow-y-auto" onClick={onClose}>
       <div
-        className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 w-full max-w-md shadow-2xl relative my-8"
+        className="bg-[#0D0D0D] border border-white/10 rounded-2xl p-8 w-full max-w-md shadow-2xl relative my-8"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
@@ -133,7 +133,7 @@ export default function OrderModal({ isOpen, onClose, onSubmit, isSubmitting }: 
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#FF6B00] focus:ring-1 focus:ring-[#FF6B00]"
+              className="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#FFC400] focus:ring-1 focus:ring-[#FFC400]"
               placeholder={dict.orderModal.namePlaceholder}
             />
           </div>
@@ -150,7 +150,7 @@ export default function OrderModal({ isOpen, onClose, onSubmit, isSubmitting }: 
               className={`w-full bg-zinc-950 border rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-1 ${
                 phoneError
                   ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
-                  : 'border-zinc-700 focus:border-[#FF6B00] focus:ring-[#FF6B00]'
+                  : 'border-zinc-700 focus:border-[#FFC400] focus:ring-[#FFC400]'
               }`}
               placeholder={dict.orderModal.phonePlaceholder}
             />
@@ -178,7 +178,7 @@ export default function OrderModal({ isOpen, onClose, onSubmit, isSubmitting }: 
                       value={surname}
                       onChange={(e) => setSurname(e.target.value)}
                       placeholder={d.surnamePlaceholder}
-                      className="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#FF6B00] focus:ring-1 focus:ring-[#FF6B00]"
+                      className="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#FFC400] focus:ring-1 focus:ring-[#FFC400]"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-3">
@@ -190,7 +190,7 @@ export default function OrderModal({ isOpen, onClose, onSubmit, isSubmitting }: 
                         value={postalCode}
                         onChange={(e) => setPostalCode(e.target.value)}
                         placeholder={d.postalCodePlaceholder}
-                        className="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#FF6B00] focus:ring-1 focus:ring-[#FF6B00]"
+                        className="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#FFC400] focus:ring-1 focus:ring-[#FFC400]"
                       />
                     </div>
                     <div>
@@ -201,7 +201,7 @@ export default function OrderModal({ isOpen, onClose, onSubmit, isSubmitting }: 
                         value={district}
                         onChange={(e) => setDistrict(e.target.value)}
                         placeholder={d.districtPlaceholder}
-                        className="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#FF6B00] focus:ring-1 focus:ring-[#FF6B00]"
+                        className="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#FFC400] focus:ring-1 focus:ring-[#FFC400]"
                       />
                     </div>
                   </div>
@@ -213,7 +213,7 @@ export default function OrderModal({ isOpen, onClose, onSubmit, isSubmitting }: 
                       value={city}
                       onChange={(e) => setCity(e.target.value)}
                       placeholder={d.cityPlaceholder}
-                      className="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#FF6B00] focus:ring-1 focus:ring-[#FF6B00]"
+                      className="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#FFC400] focus:ring-1 focus:ring-[#FFC400]"
                     />
                   </div>
                   <div>
@@ -224,7 +224,7 @@ export default function OrderModal({ isOpen, onClose, onSubmit, isSubmitting }: 
                       value={street}
                       onChange={(e) => setStreet(e.target.value)}
                       placeholder={d.streetPlaceholder}
-                      className="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#FF6B00] focus:ring-1 focus:ring-[#FF6B00]"
+                      className="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#FFC400] focus:ring-1 focus:ring-[#FFC400]"
                     />
                   </div>
                 </div>
@@ -244,7 +244,7 @@ export default function OrderModal({ isOpen, onClose, onSubmit, isSubmitting }: 
                     value={novaPostBranch}
                     onChange={(e) => setNovaPostBranch(e.target.value)}
                     placeholder={d.branchPlaceholder}
-                    className="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#FF6B00] focus:ring-1 focus:ring-[#FF6B00]"
+                    className="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#FFC400] focus:ring-1 focus:ring-[#FFC400]"
                   />
                 </div>
               )}
@@ -272,7 +272,7 @@ export default function OrderModal({ isOpen, onClose, onSubmit, isSubmitting }: 
               className={`mt-2 w-full py-4 rounded-xl font-bold text-lg transition-all ${
                 !canSubmit
                   ? "bg-zinc-700 text-zinc-400 cursor-not-allowed"
-                  : "bg-[#FF6B00] text-white hover:bg-[#E65C00] active:scale-[0.98] shadow-lg shadow-orange-200"
+                  : "bg-[#FFC400] text-white hover:bg-[#E8B300] active:scale-[0.98] shadow-lg shadow-orange-200"
               }`}
           >
             {isSubmitting ? dict.orderModal.submitting : dict.orderModal.submit}
