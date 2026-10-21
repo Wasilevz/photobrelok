@@ -12,3 +12,37 @@
 .faq-section{padding-block:120px;display:grid;grid-template-columns:.8fr 1.2fr;gap:80px}.faq-list{border-top:1px solid var(--brand-border)}.faq-list details{border-bottom:1px solid var(--brand-border);padding:20px 0}.faq-list summary{cursor:pointer;list-style:none;font-size:15px;font-weight:750;display:flex;justify-content:space-between;gap:20px}.faq-list summary::-webkit-details-marker{display:none}.faq-list summary:after{content:"+";font-size:20px;font-weight:400}.faq-list details[open] summary:after{content:"−"}.faq-list details p{color:#64635D;font-size:14px;line-height:1.7;margin:16px 28px 0 0}
 .final-cta{background:var(--brand-ink);color:#fff;text-align:center;padding:80px 24px;margin-bottom:40px}.final-cta .section-eyebrow{color:#BEBDB6}.final-cta h2{max-width:720px;margin:0 auto 30px}.final-cta p{color:#BEBDB6;font-size:12px;margin:22px 0 0}.order-cta button{box-shadow:0 10px 30px rgba(255,196,0,.2)}
 @media(max-width:720px){.hero-copy{padding-top:4.8rem}.hero-copy h1{font-size:clamp(34px,10vw,48px)}.trust-strip{grid-template-columns:1fr;gap:14px;margin-top:54px;padding:20px 0}.trust-strip>div{justify-content:flex-start}.story-section{padding-block:76px 66px}.story-grid,.faq-section,.occasions-section{grid-template-columns:1fr;gap:30px}.story-grid h2,.section-heading h2,.occasion-copy h2,.final-cta h2{font-size:34px}.detail-grid,.steps-grid{grid-template-columns:1fr}.detail-card{min-height:210px;padding:24px}.details-section{padding-bottom:70px}.steps-section{padding-block:60px 70px}.steps-grid{gap:30px;margin:38px 0}.occasions-section{padding:32px 24px;width:calc(100% - 24px)}.faq-section{padding-block:76px}.final-cta{padding:58px 20px;margin-bottom:12px}}
+
+/* Brand-led storefront refresh */
+.site-header{min-height:88px;display:flex;align-items:center;justify-content:space-between;gap:24px;border-bottom:1px solid var(--brand-border);margin-bottom:20px}
+.brand-mark{display:inline-flex;align-items:center;gap:10px;color:var(--brand-ink);text-decoration:none;flex-shrink:0}
+.brand-symbol{display:grid;place-items:center;width:38px;height:38px;background:var(--brand-accent);font-size:22px;font-weight:950;letter-spacing:-.08em}
+.brand-word{display:flex;flex-direction:column;font-size:12px;letter-spacing:.16em;font-weight:900;line-height:1.25}
+.brand-word span{font-weight:500;letter-spacing:.22em;font-size:10px}
+.site-nav{display:flex;align-items:center;gap:30px}
+.site-nav a{color:#55544E;text-decoration:none;font-size:12px;font-weight:700;transition:color .2s}
+.site-nav a:hover{color:#000}
+.header-cta{display:inline-flex;align-items:center;justify-content:center;background:var(--brand-ink);color:#fff;text-decoration:none;padding:13px 18px;font-size:12px;font-weight:800;white-space:nowrap;transition:background .2s}
+.header-cta:hover{background:#34332F}
+.hero-section{padding-top:30px}
+.hero-copy{text-align:left;max-width:880px;margin-left:0;margin-right:auto;padding-top:3rem;padding-bottom:1.2rem}
+.hero-copy h1{max-width:800px;text-wrap:balance;font-size:clamp(42px,6.5vw,76px);line-height:.99;letter-spacing:-.065em}
+.hero-copy>p:first-of-type{max-width:590px;margin-left:0;margin-right:0;color:#5C5B55}
+.hero-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:24px;font-size:10px;font-weight:850;letter-spacing:.17em;color:#65645E}
+.hero-dot{width:8px;height:8px;background:var(--brand-accent);display:inline-block;border-radius:50%;box-shadow:0 0 0 5px rgba(255,196,0,.16)}
+.constructor-stage{margin-top:14px}
+.order-cta{margin-top:30px}
+.primary-button,.order-cta button{border-radius:2px!important}
+@media(max-width:720px){
+ .site-header{min-height:72px;gap:10px;margin-bottom:4px}
+ .brand-symbol{width:32px;height:32px;font-size:19px}
+ .brand-word{font-size:10px}
+ .brand-word span{font-size:8px}
+ .site-nav{display:none}
+ .header-cta{padding:11px 12px;font-size:11px}
+ .hero-section{padding-top:0}
+ .hero-copy{padding-top:3.7rem;padding-bottom:.5rem;margin-bottom:14px}
+ .hero-copy h1{font-size:clamp(38px,10.5vw,54px);line-height:1.02}
+ .hero-eyebrow{font-size:9px;letter-spacing:.12em;margin-bottom:18px}
+ .constructor-stage{margin-top:10px}
+}
