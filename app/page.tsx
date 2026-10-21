@@ -196,6 +196,7 @@ export default function Home() {
           <a href="#details">{lang === 'ru' ? 'О брелоке' : 'Despre breloc'}</a>
           <a href="#faq">{lang === 'ru' ? 'Вопросы' : 'Întrebări'}</a>
         </nav>
+        <button onClick={() => setLang(lang === 'ru' ? 'ro' : 'ru')} aria-label="Schimbă limba / Сменить язык" className="language-switch border rounded-full px-3 py-2 text-xs font-bold active:scale-95 transition-all">{lang === 'ru' ? 'RO' : 'RU'}</button>
         <a className="header-cta" href="#constructor">{lang === 'ru' ? 'Создать свой ↗' : 'Creează-l ↗'}</a>
       </header>
 
@@ -207,14 +208,6 @@ export default function Home() {
         multiple
         className="hidden" 
       />
-
-      <button
-        onClick={() => setLang(lang === 'ru' ? 'ro' : 'ru')}
-        aria-label="Schimbă limba / Сменить язык"
-        className="language-switch fixed top-4 right-4 z-[70] border shadow-md rounded-full px-4 py-2 text-sm font-bold active:scale-95 transition-all"
-      >
-        {lang === 'ru' ? '🇷🇴 RO' : '🇲🇩 RU'}
-      </button>
 
       <section className="hero-section content-section">
         <div className="hero-copy max-w-3xl mx-auto text-center mb-10 px-4">
