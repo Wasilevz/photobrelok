@@ -186,6 +186,19 @@ export default function Home() {
   return (
     <main className="site-shell min-h-screen text-gray-900 font-sans selection:bg-amber-200 overflow-x-hidden">
       
+      <header className="site-header content-section">
+        <a href="#" className="brand-mark" aria-label="Photobrelok — главная">
+          <span className="brand-symbol">P.</span>
+          <span className="brand-word">PHOTO<span>BRELOK</span></span>
+        </a>
+        <nav className="site-nav" aria-label={lang === 'ru' ? 'Основная навигация' : 'Navigare principală'}>
+          <a href="#about">{lang === 'ru' ? 'История' : 'Povestea'}</a>
+          <a href="#details">{lang === 'ru' ? 'О брелоке' : 'Despre breloc'}</a>
+          <a href="#faq">{lang === 'ru' ? 'Вопросы' : 'Întrebări'}</a>
+        </nav>
+        <a className="header-cta" href="#constructor">{lang === 'ru' ? 'Создать свой ↗' : 'Creează-l ↗'}</a>
+      </header>
+
       <input 
         type="file" 
         ref={fileInputRef} 
@@ -203,7 +216,9 @@ export default function Home() {
         {lang === 'ru' ? '🇷🇴 RO' : '🇲🇩 RU'}
       </button>
 
-      <div className="hero-copy max-w-3xl mx-auto text-center mb-10 px-4">
+      <section className="hero-section content-section">
+        <div className="hero-copy max-w-3xl mx-auto text-center mb-10 px-4">
+        <div className="hero-eyebrow"><span className="hero-dot" />{lang === 'ru' ? 'ВАШИ ВОСПОМИНАНИЯ — ВСЕГДА РЯДОМ' : 'AMINTIRILE TALE, MEREU APROAPE'}</div>
         <h1 className="text-4xl font-extrabold tracking-tight text-black sm:text-6xl mb-5 leading-[1.05]">
           {dict.home.title}
         </h1>
@@ -213,7 +228,8 @@ export default function Home() {
         <p className="mt-4 text-[#0D0D0D] font-bold text-xl">
           {dict.home.priceLine(PRICE_MDL)}
         </p>
-      </div>
+        </div>
+      </section>
 
       <div id="constructor" className="constructor-stage relative w-full max-w-5xl mx-auto h-[220px] mt-8">
 
@@ -367,7 +383,7 @@ export default function Home() {
           <div className="story-copy"><p>{lang === 'ru' ? 'Внутри ретро-брелока — ваши фотографии, маленькие напоминания о людях и моментах, которые хочется хранить с собой.' : 'În interiorul brelocului retro sunt fotografiile tale — mici amintiri despre oamenii și momentele pe care vrei să le porți cu tine.'}</p><p>{lang === 'ru' ? 'Это личный подарок, который не заканчивается на красивой упаковке: снимки можно достать и рассматривать снова и снова.' : 'Este un cadou personal, dincolo de ambalaj: fotografiile pot fi scoase și privite iar și iar.'}</p><a href="#constructor" className="text-link">{lang === 'ru' ? 'Создать свой брелок' : 'Creează brelocul tău'} <span>↗</span></a></div>
         </div>
       </section>
-      <section className="content-section details-section">
+      <section id="details" className="content-section details-section">
         <div className="section-heading"><div className="section-eyebrow">{lang === 'ru' ? 'ПРОДУМАНО ДО МЕЛОЧЕЙ' : 'FIECARE DETALIU CONTEAZĂ'}</div><h2>{lang === 'ru' ? 'Маленький предмет. Большая история.' : 'Un obiect mic. O poveste mare.'}</h2></div>
         <div className="detail-grid">
           <article className="detail-card detail-card-dark"><span className="detail-number">01 / MEMORY</span><h3>{lang === 'ru' ? 'Ваши фотографии внутри' : 'Fotografiile tale în interior'}</h3><p>{lang === 'ru' ? 'Выберите до 10 любимых снимков и настройте кадрирование каждого прямо на сайте.' : 'Alege până la 10 fotografii preferate și ajustează fiecare cadru direct pe site.'}</p></article>
@@ -388,7 +404,7 @@ export default function Home() {
         <div className="occasion-copy"><div className="section-eyebrow">{lang === 'ru' ? 'ПОДАРОК С ЛИЧНЫМ СМЫСЛОМ' : 'UN CADOU CU SENS PERSONAL'}</div><h2>{lang === 'ru' ? 'Для тех, кому хочется сказать больше, чем словами.' : 'Pentru cei cărora vrei să le spui mai mult decât prin cuvinte.'}</h2><p>{lang === 'ru' ? 'День рождения, годовщина, отношения на расстоянии или просто желание напомнить о себе. Выберите фотографии, которые рассказывают вашу общую историю.' : 'Zi de naștere, aniversare, relație la distanță sau pur și simplu dorința de a-i aminti cuiva că îți pasă. Alege fotografiile care spun povestea voastră.'}</p><a href="#constructor" className="text-link">{lang === 'ru' ? 'Начать создание' : 'Începe personalizarea'} <span>↗</span></a></div>
         <div className="occasion-list"><div><span>01</span>{lang === 'ru' ? 'Для любимого человека' : 'Pentru persoana iubită'}</div><div><span>02</span>{lang === 'ru' ? 'Для близкого друга' : 'Pentru un prieten apropiat'}</div><div><span>03</span>{lang === 'ru' ? 'Для семьи' : 'Pentru familie'}</div><div><span>04</span>{lang === 'ru' ? 'Без повода — просто так' : 'Fără un motiv special'}</div></div>
       </section>
-      <section className="content-section faq-section">
+      <section id="faq" className="content-section faq-section">
         <div className="section-heading"><div className="section-eyebrow">{lang === 'ru' ? 'ПЕРЕД ЗАКАЗОМ' : 'ÎNAINTE DE COMANDĂ'}</div><h2>{lang === 'ru' ? 'Коротко о главном.' : 'Răspunsuri la întrebări.'}</h2></div>
         <div className="faq-list">
           <details><summary>{lang === 'ru' ? 'Сколько фотографий помещается в брелок?' : 'Câte fotografii încap în breloc?'}</summary><p>{lang === 'ru' ? 'В конструкторе можно добавить от 6 до 10 фотографий. Вы сами кадрируете каждый снимок перед заказом.' : 'Poți adăuga între 6 și 10 fotografii. Ajustezi fiecare fotografie înainte de a trimite comanda.'}</p></details>
